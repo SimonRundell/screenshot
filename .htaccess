@@ -1,0 +1,19 @@
+# Block direct access to .config.json
+<Files ".config.json">
+  Require all denied
+</Files>
+
+# Block direct access to /uploads
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^uploads/ - [F,L]
+</IfModule>
+
+# React SPA routing - send all non-file, non-api requests to index.html
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/api/
+  RewriteRule ^ index.html [QSA,L]
+</IfModule>

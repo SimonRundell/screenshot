@@ -1,0 +1,25 @@
+{
+  "app": {
+    "name": "ScreenCapture by CodeMonkey",
+    "url": "https://screencapture.codemonkey.design",
+    "api_path": "/api",
+    "image_retention_days": 30,
+    "session_lifetime_seconds": 86400,
+    "max_image_size_mb": 10
+  },
+  "db": {
+    "host": "mysql.example.com",
+    "name": "screencapture_db",
+    "user": "db_user",
+    "pass": "db_password"
+  },
+  "smtp": {
+    "host": "smtp.dreamhost.com",
+    "port": 587,
+    "encryption": "tls",
+    "user": "noreply@codemonkey.design",
+    "pass": "smtp_password",
+    "from_address": "noreply@codemonkey.design",
+    "from_name": "ScreenCapture by CodeMonkey"
+  }
+}
