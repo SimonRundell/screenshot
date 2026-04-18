@@ -18,17 +18,33 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <ColourHistoryProvider>
           <App />
           <Toaster
-            position="top-right"
+            position="top-center"
             gutter={10}
             toastOptions={{
-              duration: 3200,
-              success: { duration: 2500 },
+              duration: 4000,
+              success: {
+                duration: 4000,
+                style: {
+                  background: '#2f855a',
+                  color: '#ffffff',
+                }
+              },
+              error: {
+                duration: 5000,
+                style: {
+                  background: '#c53030',
+                  color: '#ffffff',
+                }
+              },
               style: {
                 borderRadius: '10px',
-                border: '1px solid var(--line)',
-                background: 'var(--surface)',
-                color: 'var(--text-main)',
-                boxShadow: '0 10px 24px rgba(0, 0, 0, 0.2)'
+                fontFamily: '"Trebuchet MS", Tahoma, sans-serif',
+                fontSize: '15px',
+                fontWeight: '500',
+                padding: '12px 18px',
+                background: '#2d3748',
+                color: '#ffffff',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.35)'
               }
             }}
           />

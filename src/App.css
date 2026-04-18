@@ -354,11 +354,13 @@ select {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
   margin-top: 4px;
 }
 
 .compact-colour-save input {
   flex: 1;
+  min-width: 140px;
 }
 
 .canvas-stage {

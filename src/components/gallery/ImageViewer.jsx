@@ -18,7 +18,6 @@ export default function ImageViewer({ imageId, onPickColour = null }) {
   const imageRef = useRef(null);
   const { addToHistory } = useColourHistory();
   const [pickedColour, setPickedColour] = useState(null);
-  const [saveLabel, setSaveLabel] = useState('');
   const [activeTool, setActiveTool] = useState('pick');
   const [dragStart, setDragStart] = useState(null);
   const [previewRect, setPreviewRect] = useState(null);
@@ -416,25 +415,6 @@ export default function ImageViewer({ imageId, onPickColour = null }) {
     };
   };
 
-  /**
-   * Persists the currently selected colour to database.
-   * @returns {Promise<void>}
-   */
-  const savePickedColour = async () => {
-    if (!pickedColour) return;
-    try {
-      await api.post('/colours/save.php', {
-        ...pickedColour,
-        image_id: Number(imageId),
-        label: saveLabel || null
-      });
-      setSaveLabel('');
-      toast.success(`Saved ${pickedColour.hex}`);
-    } catch (error) {
-      toast.error(getApiError(error, 'Unable to save picked colour'));
-    }
-  };
-
   return (
     <section className="image-viewer">
       <img ref={imageRef} src={`/api/images/serve.php?id=${imageId}`} alt="Captured screenshot" hidden />
@@ -502,12 +482,7 @@ export default function ImageViewer({ imageId, onPickColour = null }) {
         {pendingCrop ? <span className="canvas-overlay-box crop" style={getOverlayStyle(pendingCrop)} /> : null}
       </div>
 
-      {pickedColour ? (
-        <div className="compact-colour-save">
-          <input placeholder="Optional label" value={saveLabel} onChange={(event) => setSaveLabel(event.target.value)} />
-          <button type="button" onClick={savePickedColour}><i className="fa-solid fa-bookmark" /> Save Colour</button>
-        </div>
-      ) : null}
+
     </section>
   );
 }
