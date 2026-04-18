@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import EyeDropperButton from '../components/capture/EyeDropperButton';
-import ColourSwatch from '../components/capture/ColourSwatch';
 import ImageViewer from '../components/gallery/ImageViewer';
 
 /**
@@ -10,15 +8,27 @@ import ImageViewer from '../components/gallery/ImageViewer';
  */
 export default function ImageView() {
   const { id } = useParams();
-  const [eyedropperColour, setEyedropperColour] = useState(null);
+  const [pickedColour, setPickedColour] = useState(null);
 
   return (
     <section>
-      <h2>Image Viewer</h2>
-      <p>Image ID: {id}</p>
-      <EyeDropperButton onPick={setEyedropperColour} />
-      {eyedropperColour ? <ColourSwatch colour={eyedropperColour} /> : null}
-      <ImageViewer imageId={id} />
+      <div className="image-view-header">
+        <div>
+          <h2>Image Viewer</h2>
+          <p className="image-id-label">ID: {id}</p>
+        </div>
+        {pickedColour ? (
+          <div className="picked-colour-strip">
+            <span className="picked-colour-chip" style={{ background: pickedColour.hex }} />
+            <div className="picked-colour-values">
+              <span className="code-font">{pickedColour.hex}</span>
+              <span className="code-font">rgb({pickedColour.rgb_r}, {pickedColour.rgb_g}, {pickedColour.rgb_b})</span>
+              <span className="code-font">hsl({pickedColour.hsl_h}°, {pickedColour.hsl_s}%, {pickedColour.hsl_l}%)</span>
+            </div>
+          </div>
+        ) : null}
+      </div>
+      <ImageViewer imageId={id} onPickColour={setPickedColour} />
     </section>
   );
 }

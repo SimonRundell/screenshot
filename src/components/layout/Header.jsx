@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+import getApiError from '../../utils/getApiError';
 
 /**
  * Top fixed header with branding and account actions.
@@ -16,8 +18,10 @@ export default function Header({ appName }) {
   const handleLogout = async () => {
     try {
       await logout();
+      toast.success('Signed out');
     } catch (error) {
       // UI state already resets in context.
+      toast.error(getApiError(error, 'Sign out failed'));
     }
   };
 

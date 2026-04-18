@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import api from '../../api/axiosInstance';
+import getApiError from '../../utils/getApiError';
 
 /**
  * Register form component.
@@ -24,12 +26,16 @@ export default function RegisterForm() {
 
     try {
       const response = await api.post('/auth/register.php', { username, email, password });
-      setStatus(response.data?.message || 'Registration submitted. Check your email.');
+      const message = response.data?.message || 'Registration submitted. Check your email.';
+      setStatus(message);
+      toast.success(message);
       setUsername('');
       setEmail('');
       setPassword('');
     } catch (requestError) {
-      setError(requestError?.response?.data?.error || 'Unable to register');
+      const message = getApiError(requestError, 'Unable to register');
+      setError(message);
+      toast.error(message);
     }
   };
 

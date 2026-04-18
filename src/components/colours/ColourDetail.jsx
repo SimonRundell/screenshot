@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import api from '../../api/axiosInstance';
 import ColourSwatch from '../capture/ColourSwatch';
+import getApiError from '../../utils/getApiError';
 
 /**
  * Shows detail and inline label editing for selected colour.
@@ -17,9 +19,14 @@ export default function ColourDetail({ colour, onUpdated }) {
    */
   const updateLabel = async (label) => {
     if (!colour) return;
-    await api.post('/colours/label.php', { id: colour.id, label });
-    setStatus('Saved');
-    onUpdated();
+    try {
+      await api.post('/colours/label.php', { id: colour.id, label });
+      setStatus('Saved');
+      toast.success('Colour label updated');
+      onUpdated();
+    } catch (error) {
+      toast.error(getApiError(error, 'Unable to save colour label'));
+    }
   };
 
   if (!colour) {

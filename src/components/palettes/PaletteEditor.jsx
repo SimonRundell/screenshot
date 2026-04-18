@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
+import toast from 'react-hot-toast';
 import api from '../../api/axiosInstance';
+import getApiError from '../../utils/getApiError';
 
 /**
  * Edits selected palette including rename, remove, and export.
@@ -38,7 +40,12 @@ export default function PaletteEditor({ palette }) {
    */
   const rename = async () => {
     if (!palette) return;
-    await api.post('/palettes/rename.php', { id: palette.id, name });
+    try {
+      await api.post('/palettes/rename.php', { id: palette.id, name });
+      toast.success('Palette renamed');
+    } catch (error) {
+      toast.error(getApiError(error, 'Unable to rename palette'));
+    }
   };
 
   /**
@@ -48,8 +55,13 @@ export default function PaletteEditor({ palette }) {
    */
   const removeColour = async (colourId) => {
     if (!palette) return;
-    await api.post('/palettes/remove-colour.php', { palette_id: palette.id, colour_id: colourId });
-    setItems((prev) => prev.filter((item) => item.id !== colourId));
+    try {
+      await api.post('/palettes/remove-colour.php', { palette_id: palette.id, colour_id: colourId });
+      setItems((prev) => prev.filter((item) => item.id !== colourId));
+      toast.success('Colour removed from palette');
+    } catch (error) {
+      toast.error(getApiError(error, 'Unable to remove colour'));
+    }
   };
 
   /**
@@ -59,9 +71,14 @@ export default function PaletteEditor({ palette }) {
    */
   const addColour = async (colourId) => {
     if (!palette) return;
-    await api.post('/palettes/add-colour.php', { palette_id: palette.id, colour_id: colourId });
-    const selected = allColours.find((item) => item.id === Number(colourId));
-    if (selected) setItems((prev) => [...prev, selected]);
+    try {
+      await api.post('/palettes/add-colour.php', { palette_id: palette.id, colour_id: colourId });
+      const selected = allColours.find((item) => item.id === Number(colourId));
+      if (selected) setItems((prev) => [...prev, selected]);
+      toast.success('Colour added to palette');
+    } catch (error) {
+      toast.error(getApiError(error, 'Unable to add colour'));
+    }
   };
 
   /**
@@ -92,7 +109,10 @@ export default function PaletteEditor({ palette }) {
    * @param {string} text
    * @returns {Promise<void>}
    */
-  const copyText = async (text) => navigator.clipboard.writeText(text);
+  const copyText = async (text) => {
+    await navigator.clipboard.writeText(text);
+    toast.success('Copied to clipboard');
+  };
 
   if (!palette) {
     return <div className="panel-card"><p>Select a palette to edit.</p></div>;

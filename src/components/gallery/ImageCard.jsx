@@ -29,8 +29,8 @@ export default function ImageCard({ image, onDelete, onRelabel }) {
         <p className={remainingDays < 3 ? 'expiry-danger' : ''}>Expires in {remainingDays} days</p>
       </div>
       <div className="image-card-actions">
-        <Link to={`/image/${image.id}`}>Open</Link>
-        <button type="button" onClick={handleLabel}>Edit Label</button>
+        <Link to={`/image/${image.id}`} className="button-link">Open</Link>
+        <button type="button" className="secondary" onClick={handleLabel}>Edit Label</button>
         <button type="button" className="danger" onClick={() => onDelete(image.id)}>Delete</button>
       </div>
     </article>

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import api from '../../api/axiosInstance';
 import PaletteCard from './PaletteCard';
+import getApiError from '../../utils/getApiError';
 
 /**
  * Lists palettes and supports creation/removal.
@@ -32,9 +34,14 @@ export default function PaletteList({ onPick }) {
   const createPalette = async (event) => {
     event.preventDefault();
     if (!name.trim()) return;
-    await api.post('/palettes/create.php', { name });
-    setName('');
-    await load();
+    try {
+      await api.post('/palettes/create.php', { name });
+      setName('');
+      await load();
+      toast.success('Palette created');
+    } catch (error) {
+      toast.error(getApiError(error, 'Unable to create palette'));
+    }
   };
 
   /**
@@ -43,9 +50,14 @@ export default function PaletteList({ onPick }) {
    * @returns {Promise<void>}
    */
   const deletePalette = async (id) => {
-    await api.post('/palettes/delete.php', { id });
-    onPick(null);
-    await load();
+    try {
+      await api.post('/palettes/delete.php', { id });
+      onPick(null);
+      await load();
+      toast.success('Palette deleted');
+    } catch (error) {
+      toast.error(getApiError(error, 'Unable to delete palette'));
+    }
   };
 
   return (

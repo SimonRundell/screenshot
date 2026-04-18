@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 /**
  * Displays colour values and copy actions.
@@ -16,6 +17,7 @@ export default function ColourSwatch({ colour, editableLabel = false, onLabelCha
    */
   const copyValue = async (value) => {
     await navigator.clipboard.writeText(value);
+    toast.success('Copied to clipboard');
   };
 
   const rgbText = `${colour.rgb_r}, ${colour.rgb_g}, ${colour.rgb_b}`;
@@ -37,7 +39,7 @@ export default function ColourSwatch({ colour, editableLabel = false, onLabelCha
       {editableLabel ? (
         <div className="swatch-label-editor">
           <input value={label} onChange={(event) => setLabel(event.target.value)} placeholder="Colour label" />
-          <button type="button" onClick={() => onLabelChange?.(label)}>Save Label</button>
+          <button className="gap-top" type="button" onClick={() => onLabelChange?.(label)}>Save Label</button>
         </div>
       ) : (
         colour.label ? <p className="swatch-label">{colour.label}</p> : null

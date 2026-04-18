@@ -4,10 +4,10 @@ import { useColourHistory } from '../../context/ColourHistoryContext';
 
 /**
  * Uses EyeDropper API for system-wide colour picking.
- * @param {{ onPick?: (colour: Record<string, any>) => void }} props
+ * @param {{ onPick?: (colour: Record<string, any>) => void, inline?: boolean }} props
  * @returns {JSX.Element}
  */
-export default function EyeDropperButton({ onPick }) {
+export default function EyeDropperButton({ onPick, inline = false }) {
   const { addToHistory } = useColourHistory();
   const [error, setError] = useState('');
 
@@ -36,7 +36,7 @@ export default function EyeDropperButton({ onPick }) {
   };
 
   return (
-    <div className="capture-panel">
+    <div className={`capture-panel${inline ? ' capture-panel-inline' : ''}`}>
       <button type="button" onClick={handlePick}>Use Eyedropper</button>
       {error && <p className="error-text">{error}</p>}
     </div>

@@ -1,6 +1,8 @@
 import api from '../../api/axiosInstance';
+import toast from 'react-hot-toast';
 import { useColourHistory } from '../../context/ColourHistoryContext';
 import formatDate from '../../utils/formatDate';
+import getApiError from '../../utils/getApiError';
 
 /**
  * Session-only colour history panel.
@@ -15,18 +17,28 @@ export default function ColourHistory() {
    * @returns {Promise<void>}
    */
   const saveColour = async (colour) => {
-    await api.post('/colours/save.php', {
-      ...colour,
-      image_id: null,
-      label: colour.label || null
-    });
+    try {
+      await api.post('/colours/save.php', {
+        ...colour,
+        image_id: null,
+        label: colour.label || null
+      });
+      toast.success(`Saved ${colour.hex}`);
+    } catch (error) {
+      toast.error(getApiError(error, 'Could not save colour'));
+    }
+  };
+
+  const handleClearHistory = () => {
+    clearHistory();
+    toast.success('Session history cleared');
   };
 
   return (
     <aside className="history-panel">
       <div className="history-header">
         <h3>Session Colour History</h3>
-        <button type="button" onClick={clearHistory}>Clear history</button>
+        <button type="button" onClick={handleClearHistory}>Clear history</button>
       </div>
       <ul>
         {history.map((colour, index) => (

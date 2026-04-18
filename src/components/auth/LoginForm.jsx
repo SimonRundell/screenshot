@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+import getApiError from '../../utils/getApiError';
 
 /**
  * Login form component.
@@ -23,9 +25,12 @@ export default function LoginForm() {
     setError('');
     try {
       await login(email, password);
+      toast.success('Signed in successfully');
       navigate('/');
     } catch (requestError) {
-      setError(requestError?.response?.data?.error || 'Unable to login');
+      const message = getApiError(requestError, 'Unable to login');
+      setError(message);
+      toast.error(message);
     }
   };
 

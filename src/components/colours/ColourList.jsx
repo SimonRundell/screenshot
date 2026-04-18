@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import api from '../../api/axiosInstance';
+import getApiError from '../../utils/getApiError';
 
 /**
  * Displays persisted colours with selection.
@@ -28,9 +30,14 @@ export default function ColourList({ onSelect }) {
    * @returns {Promise<void>}
    */
   const deleteItem = async (id) => {
-    await api.post('/colours/delete.php', { id });
-    onSelect(null);
-    await load();
+    try {
+      await api.post('/colours/delete.php', { id });
+      onSelect(null);
+      await load();
+      toast.success('Colour deleted');
+    } catch (error) {
+      toast.error(getApiError(error, 'Unable to delete colour'));
+    }
   };
 
   return (

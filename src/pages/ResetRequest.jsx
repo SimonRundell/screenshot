@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import api from '../api/axiosInstance';
+import getApiError from '../utils/getApiError';
 
 /**
  * Password reset request page.
@@ -9,6 +11,7 @@ import api from '../api/axiosInstance';
 export default function ResetRequest() {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('');
+  const [error, setError] = useState('');
 
   /**
    * Sends reset request regardless of account existence.
@@ -17,9 +20,18 @@ export default function ResetRequest() {
    */
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await api.post('/auth/reset-request.php', { email });
-    setStatus('If this email exists, a reset link was sent.');
-    setEmail('');
+    setError('');
+    try {
+      await api.post('/auth/reset-request.php', { email });
+      const message = 'If this email exists, a reset link was sent.';
+      setStatus(message);
+      setEmail('');
+      toast.success(message);
+    } catch (requestError) {
+      const message = getApiError(requestError, 'Unable to send reset link');
+      setError(message);
+      toast.error(message);
+    }
   };
 
   return (
@@ -32,6 +44,7 @@ export default function ResetRequest() {
           <button type="submit">Send reset link</button>
         </form>
         {status ? <p className="success-text">{status}</p> : null}
+        {error ? <p className="error-text">{error}</p> : null}
         <p className="auth-links"><Link to="/login">Back to login</Link></p>
       </div>
     </section>

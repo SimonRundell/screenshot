@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import api from '../api/axiosInstance';
+import getApiError from '../utils/getApiError';
 
 /**
  * Password reset confirmation page.
@@ -23,10 +25,14 @@ export default function ResetConfirm() {
     setMessage('');
     try {
       await api.post('/auth/reset-confirm.php', { token, password });
-      setMessage('Password reset complete. You can now login.');
+      const successMessage = 'Password reset complete. You can now login.';
+      setMessage(successMessage);
       setPassword('');
+      toast.success(successMessage);
     } catch (requestError) {
-      setError(requestError?.response?.data?.error || 'Reset failed');
+      const errorMessage = getApiError(requestError, 'Reset failed');
+      setError(errorMessage);
+      toast.error(errorMessage);
     }
   };
 

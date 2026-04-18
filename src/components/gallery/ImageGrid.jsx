@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import api from '../../api/axiosInstance';
 import ImageCard from './ImageCard';
+import getApiError from '../../utils/getApiError';
 
 /**
  * Fetches and renders image cards in a responsive grid.
@@ -33,8 +35,13 @@ export default function ImageGrid() {
    * @returns {Promise<void>}
    */
   const deleteImage = async (id) => {
-    await api.post('/images/delete.php', { id });
-    await loadImages();
+    try {
+      await api.post('/images/delete.php', { id });
+      await loadImages();
+      toast.success('Image deleted');
+    } catch (error) {
+      toast.error(getApiError(error, 'Unable to delete image'));
+    }
   };
 
   /**
@@ -44,8 +51,13 @@ export default function ImageGrid() {
    * @returns {Promise<void>}
    */
   const relabelImage = async (id, label) => {
-    await api.post('/images/label.php', { id, label });
-    await loadImages();
+    try {
+      await api.post('/images/label.php', { id, label });
+      await loadImages();
+      toast.success('Image label updated');
+    } catch (error) {
+      toast.error(getApiError(error, 'Unable to update image label'));
+    }
   };
 
   if (loading) return <p>Loading images...</p>;

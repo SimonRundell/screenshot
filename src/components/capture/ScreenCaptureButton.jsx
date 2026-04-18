@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import api from '../../api/axiosInstance';
+import getApiError from '../../utils/getApiError';
 
 /**
  * Captures desktop screenshot using getDisplayMedia + ImageCapture.
@@ -17,7 +19,9 @@ export default function ScreenCaptureButton() {
    */
   const handleCapture = async () => {
     if (!navigator.mediaDevices?.getDisplayMedia || typeof window.ImageCapture === 'undefined') {
-      setError('Screen capture requires modern Chromium-based browser support.');
+      const message = 'Screen capture requires modern Chromium-based browser support.';
+      setError(message);
+      toast.error(message);
       return;
     }
 
@@ -48,9 +52,12 @@ export default function ScreenCaptureButton() {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
+      toast.success('Screenshot uploaded. Opening image viewer...');
       navigate(`/image/${response.data?.image?.id}`);
     } catch (captureError) {
-      setError(captureError?.response?.data?.error || captureError.message || 'Capture failed');
+      const message = getApiError(captureError, 'Capture failed');
+      setError(message);
+      toast.error(message);
     } finally {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
